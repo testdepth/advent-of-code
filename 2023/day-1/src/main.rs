@@ -37,16 +37,6 @@ fn load_and_calculate(input_file: &str) -> u32 {
     sum
 }
 
-#[test]
-fn test_load_and_calculate(){
-    let mut result: u32 = load_and_calculate("test.txt");
-    assert_eq!(result, 142);
-
-    result = load_and_calculate("test_2.txt");
-    assert_eq!(result, 281);
-
-}
-
 fn read_lines<P>(filename: P) -> io::Result<io::Lines<io::BufReader<File>>> where P: AsRef<Path>, {
     let file = File::open(filename)?;
     Ok(io::BufReader::new(file).lines())
@@ -176,5 +166,15 @@ fn test_word_to_num() {
     result = word_to_num(String::from("eighthree"));
     assert_eq!(result, "83");
 
+
+}
+
+#[test]
+fn test_load_and_calculate(){
+    let mut result: u32 = load_and_calculate("test.txt");
+    assert_eq!(result, 142);
+
+    result = load_and_calculate("test_2.txt");
+    assert_eq!(result, 281);
 
 }
