@@ -1,4 +1,4 @@
-use std::{io::{self, BufRead}, fs::File, path::Path, result, collections::HashMap};
+use std::{io::{self, BufRead}, fs::File, path::Path, collections::HashMap};
 use lazy_static::lazy_static;
 
 lazy_static! {
