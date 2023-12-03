@@ -3,7 +3,7 @@ use crate::custom_error::AocError;
 use std::collections::HashMap;
 
 use nom::{
-    bytes::complete::tag, character::{complete::{digit1, alpha1, line_ending, self}}, multi::separated_list1, sequence::{preceded, separated_pair},
+    bytes::complete::tag, character::{complete::{alpha1, line_ending, self}}, multi::separated_list1, sequence::{preceded, separated_pair},
     IResult,
 };
 
