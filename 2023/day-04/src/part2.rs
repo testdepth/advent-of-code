@@ -1,12 +1,12 @@
-use std::collections::HashSet;
+use std::collections::{BTreeMap, HashSet};
 
 use crate::custom_error::AocError;
 use nom::{
     self,
     bytes::complete::tag,
-    character::complete::{self, line_ending, space1, digit1, space0},
-    multi::{separated_list1, fold_many1},
-    sequence::{terminated, delimited, tuple, separated_pair},
+    character::complete::{self, digit1, line_ending, space0, space1},
+    multi::{fold_many1, separated_list1},
+    sequence::{delimited, separated_pair, terminated, tuple},
     IResult, Parser,
 };
 
@@ -17,22 +17,10 @@ struct Card {
     drawn_numbers: HashSet<u32>,
 }
 impl Card {
-    fn calculate(&self) -> i32 {
-        let mut result = 0;
-        for num in self.winning_numbers.iter() {
-            match self.drawn_numbers.get(&num) {
-                Some(_) => {
-                    if result == 0 {
-                    result = 1
-                    } else {
-                        result *= 2
-                    }
-                },
-                None => ()
-        
-            }
-        }
-        result
+    fn total_matches(&self) -> u32 {
+        self.winning_numbers
+            .intersection(&self.drawn_numbers)
+            .count() as u32
     }
 }
 
@@ -68,13 +56,29 @@ fn parse_cards(input: &str) -> IResult<&str, Vec<Card>> {
 
 #[tracing::instrument]
 pub fn process(input: &str) -> miette::Result<String, AocError> {
-    let mut result = 0;
     let (_, cards) = parse_cards(&input).expect("should parse");
-    for card in cards.iter() {
-        result += card.calculate();
-    }
 
-    Ok(result.to_string())
+    //collect matches into vec
+    let matches: Vec<_> = cards.iter().map(|card| card.total_matches()).collect();
+    // dict like object to hold matches + pointsd
+    let holder: BTreeMap<usize, u32> = (0..cards.len()).map(|idx| (idx, 1)).collect();
+
+    let final_counts: u32 = matches
+        .iter()
+        .enumerate()
+        .fold(holder, |mut acc, (idx, cardnum)| {
+            let step = *acc.get(&idx).unwrap();
+
+            for i in (idx + 1)..(idx + 1 + *cardnum as usize) {
+                acc.entry(i).and_modify(|val| {
+                    *val += step;
+                });
+            }
+            acc
+        })
+        .values()
+        .sum();
+    Ok(final_counts.to_string())
 }
 
 #[cfg(test)]
@@ -106,7 +110,7 @@ Card 3:  1 21 53 59 44 | 69 82 63 72 16 21 14  1
 Card 4: 41 92 73 84 69 | 59 84 76 51 58  5 54 83
 Card 5: 87 83 26 28 32 | 88 30 70 12 93 22 82 36
 Card 6: 31 18 13 56 72 | 74 77 10 23 35 67 36 11";
-        assert_eq!("13", process(input)?);
+        assert_eq!("30", process(input)?);
         Ok(())
     }
 }

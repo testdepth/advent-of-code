@@ -4,9 +4,9 @@ use crate::custom_error::AocError;
 use nom::{
     self,
     bytes::complete::tag,
-    character::complete::{self, line_ending, space1, digit1, space0},
-    multi::{separated_list1, fold_many1},
-    sequence::{terminated, delimited, tuple, separated_pair},
+    character::complete::{self, digit1, line_ending, space0, space1},
+    multi::{fold_many1, separated_list1},
+    sequence::{delimited, separated_pair, terminated, tuple},
     IResult, Parser,
 };
 
@@ -23,13 +23,12 @@ impl Card {
             match self.drawn_numbers.get(&num) {
                 Some(_) => {
                     if result == 0 {
-                    result = 1
+                        result = 1
                     } else {
                         result *= 2
                     }
-                },
-                None => ()
-        
+                }
+                None => (),
             }
         }
         result
@@ -68,11 +67,10 @@ fn parse_cards(input: &str) -> IResult<&str, Vec<Card>> {
 
 #[tracing::instrument]
 pub fn process(input: &str) -> miette::Result<String, AocError> {
-    let mut result = 0;
+    let mut result: i32 = 0;
     let (_, cards) = parse_cards(&input).expect("should parse");
-    for card in cards.iter() {
-        result += card.calculate();
-    }
+
+    let result = cards.iter().map(|card| card.calculate()).sum::<i32>();
 
     Ok(result.to_string())
 }
