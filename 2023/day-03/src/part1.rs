@@ -32,17 +32,12 @@ impl GridNum{
     fn validate_num(&self, grid: &BTreeMap<(i32, i32), GridLoc>) -> i32{
         let mut start = self.x;
         let end = self.x + self.chars.len() as i32 - 1;
-        println!("NUMBER: {}, start_x {} , start_y {}, end {}", self.to_num(), self.x, self.y, end);
         while start <= end {
-            println!("start: {}", start);
             for (offset_x, offset_y) in DIRECTIONS.iter() {
                 let cur_x = offset_x + start;
                 let cur_y = offset_y + self.y;
-                println!("x: {}, y {}", cur_x, cur_y);
                 match grid.get(&(cur_y, cur_x)) {
                     Some(loc) => if let GridLoc::Symbol(x) = loc {
-                            println!("FOUND: {}, {}, x: {}, y: {}",self.to_num(), x, cur_x, cur_y);
-                            println!("GRID: {:?}", grid.get(&(cur_x, cur_y)).expect("."));
                             return self.to_num()
                         },
                     None => ()
@@ -69,7 +64,6 @@ pub fn process(
             },)
         })
     }).collect::<BTreeMap<(i32, i32), GridLoc>>();
-    // dbg!(&schematic);
     let mut total: i32 = 0;
     let mut nums: Vec<GridNum> = vec![];
     let mut curnum: Option<GridNum> = None;
@@ -93,7 +87,6 @@ pub fn process(
             },
         }
     }
-    dbg!(&nums);
     for num in nums {
         total += num.validate_num(&schematic);
     }

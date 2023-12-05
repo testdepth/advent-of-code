@@ -1,0 +1,3 @@
+pre-rayon
+day_05_bench  fastest       │ slowest       │ median        │ mean          │ samples │ iters
+╰─ part1      15.33 µs      │ 22.16 µs      │ 15.54 µs      │ 15.64 µs      │ 100     │ 100

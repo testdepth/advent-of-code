@@ -88,7 +88,6 @@ pub fn process(
             },)
         })
     }).collect::<BTreeMap<(i32, i32), GridLoc>>();
-    // dbg!(&schematic);
     let mut total: i32 = 0;
     let mut nums: Vec<GridNum> = vec![];
     let mut gears: BTreeMap<(i32, i32), Gear> = BTreeMap::new();
