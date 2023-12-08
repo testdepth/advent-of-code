@@ -1,11 +1,19 @@
-use std::{collections::BTreeMap, arch::aarch64::vabal_high_s16, thread::current};
-use lazy_static::lazy_static;
 use crate::custom_error::AocError;
+use lazy_static::lazy_static;
+use std::{arch::aarch64::vabal_high_s16, collections::BTreeMap, thread::current};
 
 lazy_static! {
-    static ref DIRECTIONS: Vec<(i32, i32)> = vec![(-1,1), (-1,0), (0,1), (1,1), (1,0), (1,-1), (0,-1), (-1,-1)];
+    static ref DIRECTIONS: Vec<(i32, i32)> = vec![
+        (-1, 1),
+        (-1, 0),
+        (0, 1),
+        (1, 1),
+        (1, 0),
+        (1, -1),
+        (0, -1),
+        (-1, -1)
+    ];
 }
-
 
 #[derive(Debug)]
 enum GridLoc {
@@ -18,18 +26,21 @@ enum GridLoc {
 struct GridNum {
     x: i32,
     y: i32,
-    chars: Vec<char>
+    chars: Vec<char>,
 }
 
-
-impl GridNum{
-
-
+impl GridNum {
     fn to_num(&self) -> i32 {
-        self.chars.clone().into_iter().collect::<String>().to_string().parse::<i32>().unwrap()
+        self.chars
+            .clone()
+            .into_iter()
+            .collect::<String>()
+            .to_string()
+            .parse::<i32>()
+            .unwrap()
     }
 
-    fn validate_num(&self, grid: &BTreeMap<(i32, i32), GridLoc>) -> i32{
+    fn validate_num(&self, grid: &BTreeMap<(i32, i32), GridLoc>) -> i32 {
         let mut start = self.x;
         let end = self.x + self.chars.len() as i32 - 1;
         while start <= end {
@@ -37,33 +48,39 @@ impl GridNum{
                 let cur_x = offset_x + start;
                 let cur_y = offset_y + self.y;
                 match grid.get(&(cur_y, cur_x)) {
-                    Some(loc) => if let GridLoc::Symbol(x) = loc {
-                            return self.to_num()
-                        },
-                    None => ()
+                    Some(loc) => {
+                        if let GridLoc::Symbol(x) = loc {
+                            return self.to_num();
+                        }
+                    }
+                    None => (),
                 }
             }
             start += 1;
-        };
+        }
         0
     }
 }
 
 #[tracing::instrument]
-pub fn process(
-    input: &str,
-) -> miette::Result<String, AocError> {
+pub fn process(input: &str) -> miette::Result<String, AocError> {
     // load schematic into BtreeMap of indices
-    let schematic = input.lines().enumerate().flat_map(|(row, line)| {
-        line.trim().chars().enumerate().map( move |(col, pos)| {
-            ((row as i32, col as i32),
-            match pos {
-                '.' => GridLoc::Dot,
-                c if c.is_ascii_digit() => GridLoc::Number(c),
-                c => GridLoc::Symbol(c),
-            },)
+    let schematic = input
+        .lines()
+        .enumerate()
+        .flat_map(|(row, line)| {
+            line.trim().chars().enumerate().map(move |(col, pos)| {
+                (
+                    (row as i32, col as i32),
+                    match pos {
+                        '.' => GridLoc::Dot,
+                        c if c.is_ascii_digit() => GridLoc::Number(c),
+                        c => GridLoc::Symbol(c),
+                    },
+                )
+            })
         })
-    }).collect::<BTreeMap<(i32, i32), GridLoc>>();
+        .collect::<BTreeMap<(i32, i32), GridLoc>>();
     let mut total: i32 = 0;
     let mut nums: Vec<GridNum> = vec![];
     let mut curnum: Option<GridNum> = None;
@@ -73,17 +90,21 @@ pub fn process(
         // Find number
         match loc {
             GridLoc::Number(c) => match curnum {
-                Some(ref mut cur) => {
-                    cur.chars.push(*c)
-                },
-                _ => curnum = Some(GridNum {x: *col, y: *row, chars: vec![*c] }),
+                Some(ref mut cur) => cur.chars.push(*c),
+                _ => {
+                    curnum = Some(GridNum {
+                        x: *col,
+                        y: *row,
+                        chars: vec![*c],
+                    })
+                }
             },
             _ => match curnum {
                 Some(cur) => {
                     nums.push(cur);
                     curnum = None;
-                },
-                _ => ()
+                }
+                _ => (),
             },
         }
     }
@@ -115,8 +136,12 @@ mod tests {
     }
 
     #[test]
-    fn test_gridnum_to_num() -> miette::Result<()>{
-        let num: GridNum = GridNum{ x: 0, y: 0, chars: vec!['1', '2', '3'] };
+    fn test_gridnum_to_num() -> miette::Result<()> {
+        let num: GridNum = GridNum {
+            x: 0,
+            y: 0,
+            chars: vec!['1', '2', '3'],
+        };
         assert_eq!(num.to_num(), 123);
         Ok(())
     }

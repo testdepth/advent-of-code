@@ -1,11 +1,19 @@
-use std::collections::BTreeMap;
-use lazy_static::lazy_static;
 use crate::custom_error::AocError;
+use lazy_static::lazy_static;
+use std::collections::BTreeMap;
 
 lazy_static! {
-    static ref DIRECTIONS: Vec<(i32, i32)> = vec![(-1,1), (-1,0), (0,1), (1,1), (1,0), (1,-1), (0,-1), (-1,-1)];
+    static ref DIRECTIONS: Vec<(i32, i32)> = vec![
+        (-1, 1),
+        (-1, 0),
+        (0, 1),
+        (1, 1),
+        (1, 0),
+        (1, -1),
+        (0, -1),
+        (-1, -1)
+    ];
 }
-
 
 #[derive(Debug)]
 enum GridLoc {
@@ -23,8 +31,13 @@ struct Gear {
 }
 
 impl Gear {
-    fn new(x: i32, y: i32) -> Gear{
-        Gear { x: x, y: y, valid: false, adjacent: vec![] }
+    fn new(x: i32, y: i32) -> Gear {
+        Gear {
+            x: x,
+            y: y,
+            valid: false,
+            adjacent: vec![],
+        }
     }
 
     fn valid_sum(&self) -> i32 {
@@ -38,15 +51,25 @@ impl Gear {
 struct GridNum {
     x: i32,
     y: i32,
-    chars: Vec<char>
+    chars: Vec<char>,
 }
 
-impl GridNum{
+impl GridNum {
     fn to_num(&self) -> i32 {
-        self.chars.clone().into_iter().collect::<String>().to_string().parse::<i32>().unwrap()
+        self.chars
+            .clone()
+            .into_iter()
+            .collect::<String>()
+            .to_string()
+            .parse::<i32>()
+            .unwrap()
     }
 
-    fn populate_gears(&self, gears: &mut BTreeMap<(i32, i32), Gear>, grid: &BTreeMap<(i32, i32), GridLoc>) -> i32{
+    fn populate_gears(
+        &self,
+        gears: &mut BTreeMap<(i32, i32), Gear>,
+        grid: &BTreeMap<(i32, i32), GridLoc>,
+    ) -> i32 {
         let mut start = self.x;
         let end = self.x + self.chars.len() as i32 - 1;
         while start <= end {
@@ -54,40 +77,45 @@ impl GridNum{
                 let cur_x = offset_x + start;
                 let cur_y = offset_y + self.y;
                 match grid.get(&(cur_y, cur_x)) {
-                    Some(loc) => if let GridLoc::Symbol(x) = loc {
+                    Some(loc) => {
+                        if let GridLoc::Symbol(x) = loc {
                             if *x == '*' {
                                 if let Some(gear) = gears.get_mut(&(cur_x, cur_y)) {
-                                    if !gear.adjacent.contains(self){
+                                    if !gear.adjacent.contains(self) {
                                         gear.adjacent.push(self.clone());
                                     };
                                 };
-                                
                             };
-                        },
-                    None => ()
+                        }
+                    }
+                    None => (),
                 }
             }
             start += 1;
-        };
+        }
         0
     }
 }
 
 #[tracing::instrument]
-pub fn process(
-    input: &str,
-) -> miette::Result<String, AocError> {
+pub fn process(input: &str) -> miette::Result<String, AocError> {
     // load schematic into BtreeMap of indices
-    let schematic = input.lines().enumerate().flat_map(|(row, line)| {
-        line.trim().chars().enumerate().map( move |(col, pos)| {
-            ((row as i32, col as i32),
-            match pos {
-                '.' => GridLoc::Dot,
-                c if c.is_ascii_digit() => GridLoc::Number(c),
-                c => GridLoc::Symbol(c),
-            },)
+    let schematic = input
+        .lines()
+        .enumerate()
+        .flat_map(|(row, line)| {
+            line.trim().chars().enumerate().map(move |(col, pos)| {
+                (
+                    (row as i32, col as i32),
+                    match pos {
+                        '.' => GridLoc::Dot,
+                        c if c.is_ascii_digit() => GridLoc::Number(c),
+                        c => GridLoc::Symbol(c),
+                    },
+                )
+            })
         })
-    }).collect::<BTreeMap<(i32, i32), GridLoc>>();
+        .collect::<BTreeMap<(i32, i32), GridLoc>>();
     let mut total: i32 = 0;
     let mut nums: Vec<GridNum> = vec![];
     let mut gears: BTreeMap<(i32, i32), Gear> = BTreeMap::new();
@@ -98,30 +126,38 @@ pub fn process(
         // Find number
         match loc {
             GridLoc::Number(c) => match curnum {
-                Some(ref mut cur) => {
-                    cur.chars.push(*c)
-                },
-                _ => curnum = Some(GridNum {x: *col, y: *row, chars: vec![*c] }),
+                Some(ref mut cur) => cur.chars.push(*c),
+                _ => {
+                    curnum = Some(GridNum {
+                        x: *col,
+                        y: *row,
+                        chars: vec![*c],
+                    })
+                }
             },
-            GridLoc::Symbol(c) => if *c == '*' {
-                gears.insert((*col, *row),Gear::new(*col, *row));
-                if let Some(cur) = curnum {
+            GridLoc::Symbol(c) => {
+                if *c == '*' {
+                    gears.insert((*col, *row), Gear::new(*col, *row));
+                    if let Some(cur) = curnum {
                         nums.push(cur);
                         curnum = None;
-                    };            
+                    };
                 }
-            _ => if let Some(cur) = curnum {
-                nums.push(cur);
-                curnum = None;
-            },     
+            }
+            _ => {
+                if let Some(cur) = curnum {
+                    nums.push(cur);
+                    curnum = None;
+                }
+            }
         }
     }
 
     for num in nums {
         num.populate_gears(&mut gears, &schematic);
     }
-    
-    for gear in gears.values(){
+
+    for gear in gears.values() {
         total += gear.valid_sum()
     }
 
@@ -149,8 +185,12 @@ mod tests {
     }
 
     #[test]
-    fn test_gridnum_to_num() -> miette::Result<()>{
-        let num: GridNum = GridNum{ x: 0, y: 0, chars: vec!['1', '2', '3'] };
+    fn test_gridnum_to_num() -> miette::Result<()> {
+        let num: GridNum = GridNum {
+            x: 0,
+            y: 0,
+            chars: vec!['1', '2', '3'],
+        };
         assert_eq!(num.to_num(), 123);
         Ok(())
     }

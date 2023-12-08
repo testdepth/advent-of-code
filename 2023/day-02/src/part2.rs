@@ -3,37 +3,33 @@ use crate::custom_error::AocError;
 use std::collections::HashMap;
 
 use nom::{
-    bytes::complete::tag, character::{complete::{alpha1, line_ending, self}}, multi::separated_list1, sequence::{preceded, separated_pair},
+    bytes::complete::tag,
+    character::complete::{self, alpha1, line_ending},
+    multi::separated_list1,
+    sequence::{preceded, separated_pair},
     IResult,
 };
 
 #[tracing::instrument]
-pub fn process(
-    input: &str,
-) -> miette::Result<String, AocError> {
-    
+pub fn process(input: &str) -> miette::Result<String, AocError> {
     let mut result = 0;
     let games = parse_games(input).expect("should parse");
 
     for game in games.1 {
-        let  mut map: HashMap<&str, u32> = HashMap::from([
-            ("red", 0),
-            ("green", 0),
-            ("blue", 0),
-        ]);
+        let mut map: HashMap<&str, u32> = HashMap::from([("red", 0), ("green", 0), ("blue", 0)]);
         for round in game.rounds {
             for cube in round {
-                if cube.value > *map.get(cube.kind).expect("found val"){
+                if cube.value > *map.get(cube.kind).expect("found val") {
                     *map.get_mut(cube.kind).unwrap() = cube.value;
                 };
-            };
-        };
+            }
+        }
         let mut intermediate: u32 = 1;
-                for val in map.values() {
-                    intermediate *= val
-                }
-                result += intermediate;
-    };
+        for val in map.values() {
+            intermediate *= val
+        }
+        result += intermediate;
+    }
     Ok(result.to_string())
 }
 
@@ -50,34 +46,36 @@ struct Game<'a> {
 }
 
 fn cube(input: &str) -> IResult<&str, Cube> {
-    let (input, (num, color)) =
-        separated_pair(complete::u32, tag(" "), alpha1)(input)?;
-    Ok((input, Cube {
-        kind: color,
-        value: num,
-    }))
+    let (input, (num, color)) = separated_pair(complete::u32, tag(" "), alpha1)(input)?;
+    Ok((
+        input,
+        Cube {
+            kind: color,
+            value: num,
+        },
+    ))
 }
 
 fn round(input: &str) -> IResult<&str, Vec<Cube>> {
-    let (input, cubes) = 
-        separated_list1(tag(", "), cube)(input)?;
+    let (input, cubes) = separated_list1(tag(", "), cube)(input)?;
     Ok((input, cubes))
 }
 
 fn parse_game(input: &str) -> IResult<&str, Game> {
     let (input, id) = preceded(tag("Game "), complete::u32)(input)?;
     let (input, rounds) = preceded(tag(": "), separated_list1(tag("; "), round))(input)?;
-    Ok((input, Game{
-        id: id,
-        rounds: rounds,
-    }))
+    Ok((
+        input,
+        Game {
+            id: id,
+            rounds: rounds,
+        },
+    ))
 }
 fn parse_games(input: &str) -> IResult<&str, Vec<Game>> {
-    let (input, games) =
-        separated_list1(line_ending, parse_game)(input)?;
+    let (input, games) = separated_list1(line_ending, parse_game)(input)?;
     Ok((input, games))
 }
-
 
 #[cfg(test)]
 mod tests {

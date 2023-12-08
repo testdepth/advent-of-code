@@ -1,6 +1,13 @@
 use crate::custom_error::AocError;
+use nom::{
+    self,
+    bytes::complete::tag,
+    character::complete::{self, multispace0, multispace1, not_line_ending, space0},
+    multi::fold_many1,
+    sequence::{terminated, tuple},
+    IResult,
+};
 use std::ops::Range;
-use nom::{self, IResult, bytes::complete::tag, multi::fold_many1, sequence::{terminated, tuple}, character::complete::{space0, self, multispace0, multispace1, not_line_ending}};
 
 #[derive(Debug)]
 struct Mapping {
@@ -9,30 +16,33 @@ struct Mapping {
 
 impl Mapping {
     fn traverse(&self, num: u64) -> u64 {
-        let valid_range = self.seedmap.iter().find(
-            | (source, _) |{
-                source.contains(&num)
-            },
-        );
-        let Some((source, dest)) = valid_range 
-        else {
+        let valid_range = self
+            .seedmap
+            .iter()
+            .find(|(source, _)| source.contains(&num));
+        let Some((source, dest)) = valid_range else {
             return num;
         };
 
         let offset = num - source.start;
         offset + dest.start
-        
     }
 }
 
 fn map(input: &str) -> IResult<&str, (Range<u64>, Range<u64>)> {
-    let (input, (dest_start, source_start, length)) =
-        tuple((terminated(complete::u64, space0),
-               terminated(complete::u64, space0),
-               terminated(complete::u64, space0)))
-            (input)?;
-    let dest_range = Range{ start: dest_start, end: dest_start + length };
-    let source_range = Range{ start: source_start, end: source_start + length };
+    let (input, (dest_start, source_start, length)) = tuple((
+        terminated(complete::u64, space0),
+        terminated(complete::u64, space0),
+        terminated(complete::u64, space0),
+    ))(input)?;
+    let dest_range = Range {
+        start: dest_start,
+        end: dest_start + length,
+    };
+    let source_range = Range {
+        start: source_start,
+        end: source_start + length,
+    };
     Ok((input, (source_range, dest_range)))
 }
 
@@ -47,10 +57,10 @@ fn parse_maps(input: &str) -> IResult<&str, Mapping> {
                 acc
             },
         )(input)?;
-    Ok((input, Mapping{ seedmap: maps }))
+    Ok((input, Mapping { seedmap: maps }))
 }
 
-fn parse_input(input: &str) -> IResult<&str, (Vec<u64>, Vec<Mapping>)>{
+fn parse_input(input: &str) -> IResult<&str, (Vec<u64>, Vec<Mapping>)> {
     // drop "Seeds: "
     let (input, _) = tag("seeds: ")(input)?;
 
@@ -61,7 +71,7 @@ fn parse_input(input: &str) -> IResult<&str, (Vec<u64>, Vec<Mapping>)>{
             acc.push(item);
             acc
         },
-        )(input)?;
+    )(input)?;
     let (input, _) = multispace1(input)?;
     let (input, mappings) = // separated_list1(multispace1, parse_maps)(input)?;    
         fold_many1(
@@ -76,22 +86,22 @@ fn parse_input(input: &str) -> IResult<&str, (Vec<u64>, Vec<Mapping>)>{
 }
 
 #[tracing::instrument]
-pub fn process(
-    _input: &str,
-) -> miette::Result<String, AocError> {
-    let (_,(seeds, mappings)) = parse_input(_input).expect("should parse");
-    
-    let result: Vec<u64> = seeds.iter().map(
-        |num| {
-            mappings.iter().fold(*num, 
-                |num: u64, map: &Mapping| {
-                    map.traverse(num)
-                })
-        }).collect();
-    Ok(result.iter()
-    .min()
-    .expect("should have a minimum location value")
-    .to_string())
+pub fn process(_input: &str) -> miette::Result<String, AocError> {
+    let (_, (seeds, mappings)) = parse_input(_input).expect("should parse");
+
+    let result: Vec<u64> = seeds
+        .iter()
+        .map(|num| {
+            mappings
+                .iter()
+                .fold(*num, |num: u64, map: &Mapping| map.traverse(num))
+        })
+        .collect();
+    Ok(result
+        .iter()
+        .min()
+        .expect("should have a minimum location value")
+        .to_string())
 }
 
 #[cfg(test)]
@@ -100,7 +110,15 @@ mod tests {
 
     #[test]
     fn test_traverse_seedmap() -> miette::Result<()> {
-        let mapping = Mapping{ seedmap: vec![(Range{start: 50, end: 98 }, Range{start: 52, end: 100})] };
+        let mapping = Mapping {
+            seedmap: vec![(
+                Range { start: 50, end: 98 },
+                Range {
+                    start: 52,
+                    end: 100,
+                },
+            )],
+        };
         assert_eq!(mapping.traverse(3), 3);
         assert_eq!(mapping.traverse(79), 81);
         Ok(())
