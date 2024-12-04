@@ -22,3 +22,4 @@ class Day {
     }
 }
 exports.Day = Day;
+//# sourceMappingURL=day.js.map

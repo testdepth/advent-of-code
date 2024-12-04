@@ -6,11 +6,13 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const index_1 = __importDefault(require("./day0/index"));
 const index_2 = __importDefault(require("./day1/index"));
 const index_3 = __importDefault(require("./day2/index"));
+const index_4 = __importDefault(require("./day3/index"));
 // MORE IMPORTS HERE
 const days = [
     index_1.default,
     index_2.default,
     index_3.default,
+    index_4.default,
     // MORE DAYS HERE
 ];
 async function runDay(dayId) {
@@ -31,3 +33,4 @@ else {
     console.log(`Usage: npm run start [day]`);
     console.log(`Available days: [ ${days.map((x) => x.id).join(", ")} ]`);
 }
+//# sourceMappingURL=index.js.map

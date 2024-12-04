@@ -13,3 +13,4 @@ class Day0 extends day_1.Day {
     }
 }
 exports.default = new Day0;
+//# sourceMappingURL=index.js.map

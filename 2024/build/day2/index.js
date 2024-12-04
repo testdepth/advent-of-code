@@ -26,8 +26,6 @@ class Day2 extends day_1.Day {
         for (let i of reports) {
             let res = checkSafety(i.trim(), true);
             if (res === 0) {
-                console.log(`res: ${res}`);
-                console.log(`array: ${i.trim()}`);
             }
             ;
             sum += res;
@@ -44,11 +42,6 @@ var Polarity;
     Polarity[Polarity["Zero"] = 0] = "Zero";
 })(Polarity || (Polarity = {}));
 function checkSafety(report, removable) {
-    //track polarity
-    // if(removable) {
-    //   console.log("ORIGINAL");
-    //   console.log(report);
-    // }
     let polarity = Polarity.Unset;
     let original = report.split(" ").map(Number).slice();
     let arrayReport = original.slice().reverse();
@@ -77,15 +70,12 @@ function checkSafety(report, removable) {
                 for (let i = 0; i < original.length; i++) {
                     let copy = original.slice();
                     copy.splice(i, 1);
-                    // console.log(copy)
                     let output = checkSafety(copy.join(" "), false);
                     if (output === 1) {
-                        // console.log(`return 1: ${copy}`);
                         return (1);
                     }
                 }
                 ;
-                console.log(original);
                 return (0);
             }
             else {
@@ -98,15 +88,12 @@ function checkSafety(report, removable) {
                 for (let i = 0; i < original.length; i++) {
                     let copy = original.slice();
                     copy.splice(i, 1);
-                    // console.log(copy);
                     let output = checkSafety(copy.join(" "), false);
                     if (output === 1) {
-                        // console.log(`return 1: ${copy}`);
                         return (1);
                     }
                 }
                 ;
-                console.log(original);
                 return (0);
             }
             else {
@@ -121,3 +108,4 @@ function checkSafety(report, removable) {
     return 1;
 }
 exports.checkSafety = checkSafety;
+//# sourceMappingURL=index.js.map

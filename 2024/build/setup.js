@@ -68,3 +68,4 @@ async function updateIndex() {
     console.log("  Updating index");
     await promises.writeFile(indexPath, contents);
 }
+//# sourceMappingURL=setup.js.map

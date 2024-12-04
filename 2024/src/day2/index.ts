@@ -26,8 +26,6 @@ class Day2 extends Day {
         for (let i of reports) {
           let res = checkSafety(i.trim(), true);
           if (res===0){
-          console.log(`res: ${res}`);
-          console.log(`array: ${i.trim()}`);
           };
           sum += res;
         }
@@ -44,11 +42,6 @@ enum Polarity {
   Zero = 0,
 }
 export function checkSafety(report: string, removable: boolean): number {
-      //track polarity
-      // if(removable) {
-      //   console.log("ORIGINAL");
-      //   console.log(report);
-      // }
       let polarity = Polarity.Unset;
       let original = report.split(" ").map(Number).slice();
       let arrayReport = original.slice().reverse();
@@ -77,14 +70,11 @@ export function checkSafety(report: string, removable: boolean): number {
             for (let i=0; i<original.length; i++) {
               let copy = original.slice()
               copy.splice(i, 1)
-              // console.log(copy)
               let output = checkSafety(copy.join(" "), false);
               if (output === 1) {
-                // console.log(`return 1: ${copy}`);
                 return(1)
               }
             };
-            console.log(original);
             return(0);
           } else {
             return(0);
@@ -95,14 +85,11 @@ export function checkSafety(report: string, removable: boolean): number {
             for (let i=0; i<original.length; i++) {
               let copy = original.slice()
               copy.splice(i, 1)
-              // console.log(copy);
               let output = checkSafety(copy.join(" "), false);
               if (output === 1) {
-                // console.log(`return 1: ${copy}`);
                 return(1)
               }
             };
-            console.log(original);
             return(0);
           } else {
             return(0);
