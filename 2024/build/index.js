@@ -12,6 +12,7 @@ const index_6 = __importDefault(require("./day5/index"));
 const index_7 = __importDefault(require("./day6/index"));
 const index_8 = __importDefault(require("./day7/index"));
 const index_9 = __importDefault(require("./day8/index"));
+const index_10 = __importDefault(require("./day9/index"));
 // MORE IMPORTS HERE
 const days = [
     index_1.default,
@@ -23,6 +24,7 @@ const days = [
     index_7.default,
     index_8.default,
     index_9.default,
+    index_10.default,
     // MORE DAYS HERE
 ];
 async function runDay(dayId) {
