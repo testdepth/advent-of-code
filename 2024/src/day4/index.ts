@@ -108,46 +108,45 @@ class Day4 extends Day {
     return String(result);
   }
 
-solveForPartTwo(input: string): string {
-      // Convert input to 2d array
-      let grid = stringTo2D(input);
-      //get length/width of grid
-      let rows = grid.length;
-      let cols = grid[0].length;
-      let result = 0;
+  solveForPartTwo(input: string): string {
+    // Convert input to 2d array
+    let grid = stringTo2D(input);
+    //get length/width of grid
+    let rows = grid.length;
+    let cols = grid[0].length;
+    let result = 0;
 
-      let check = (r: number, c: number, dir: number[]): string => {
-        if (
-          r + dir[0] >= 0 &&
-          r + dir[0] < rows &&
-          c + dir[1] >= 0 &&
-          c + dir[1] < cols
-        ) {
-          return grid[r + dir[0]][c + dir[1]]
-        };
-        return "."
-      };
-  
-  
-      for (let r = 0; r < rows; r++) {
-        for (let c = 0; c < cols; c++) {
-          //find X and start search
-          if (grid[r][c] === "A") {
-            //left X
-            let left = check(r,c, [-1, -1]) + check(r,c,[1,1]);
-            // //right X
-            let right = check(r, c, [-1,1]) + check(r,c,[1,-1])          
+    let check = (r: number, c: number, dir: number[]): string => {
+      if (
+        r + dir[0] >= 0 &&
+        r + dir[0] < rows &&
+        c + dir[1] >= 0 &&
+        c + dir[1] < cols
+      ) {
+        return grid[r + dir[0]][c + dir[1]];
+      }
+      return ".";
+    };
 
-            
-            if( (right === "MS" || right === "SM") && (left === "MS" || left === "SM") ) {
-              result++;
-            }
+    for (let r = 0; r < rows; r++) {
+      for (let c = 0; c < cols; c++) {
+        //find X and start search
+        if (grid[r][c] === "A") {
+          //left X
+          let left = check(r, c, [-1, -1]) + check(r, c, [1, 1]);
+          // //right X
+          let right = check(r, c, [-1, 1]) + check(r, c, [1, -1]);
 
+          if (
+            (right === "MS" || right === "SM") &&
+            (left === "MS" || left === "SM")
+          ) {
+            result++;
           }
         }
       }
-      return String(result);
-}
-
+    }
+    return String(result);
+  }
 }
 export default new Day4();
