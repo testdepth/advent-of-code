@@ -8,7 +8,7 @@ function printGrid(grid) {
         for (let s of r) {
             result += s;
         }
-        result += '\n';
+        result += "\n";
     }
     return result;
 }
@@ -19,7 +19,7 @@ function getSlope(p1, p2) {
     return { x: -(p2.x - p1.x), y: -(p2.y - p1.y) };
 }
 function onGrid(point, rows, cols) {
-    return (point.x >= 0 && point.y >= 0 && point.x < rows && point.y < cols);
+    return point.x >= 0 && point.y >= 0 && point.x < rows && point.y < cols;
 }
 class Day8 extends day_1.Day {
     constructor() {
@@ -55,24 +55,24 @@ class Day8 extends day_1.Day {
                     let leftString;
                     let rightString;
                     if (p1.x < p2.x) {
-                        leftPoint = [(p1.x - slope.x), (p1.y - slope.y)];
-                        leftString = `x${(p1.x - slope.x)}y${(p1.y - slope.y)}`;
-                        rightPoint = [(p2.x + slope.x), (p2.y + slope.y)];
-                        rightString = `x${(p2.x + slope.x)}y${(p2.y + slope.y)}`;
+                        leftPoint = [p1.x - slope.x, p1.y - slope.y];
+                        leftString = `x${p1.x - slope.x}y${p1.y - slope.y}`;
+                        rightPoint = [p2.x + slope.x, p2.y + slope.y];
+                        rightString = `x${p2.x + slope.x}y${p2.y + slope.y}`;
                     }
                     else {
-                        rightPoint = [(p1.x + slope.x), (p1.y + slope.y)];
-                        rightString = `x${(p1.x + slope.x)}y${(p1.y + slope.y)}`;
-                        leftPoint = [(p2.x - slope.x), (p2.y - slope.y)];
-                        leftString = `x${(p2.x - slope.x)}y${(p2.y - slope.y)}`;
+                        rightPoint = [p1.x + slope.x, p1.y + slope.y];
+                        rightString = `x${p1.x + slope.x}y${p1.y + slope.y}`;
+                        leftPoint = [p2.x - slope.x, p2.y - slope.y];
+                        leftString = `x${p2.x - slope.x}y${p2.y - slope.y}`;
                     }
                     console.log(`lp ${leftPoint} rp ${rightPoint}`);
                     if (onGrid({ x: leftPoint[0], y: leftPoint[1] }, rows, cols)) {
-                        grid[leftPoint[0]][leftPoint[1]] = '#';
+                        grid[leftPoint[0]][leftPoint[1]] = "#";
                         antinodes.add(leftString);
                     }
                     if (onGrid({ x: rightPoint[0], y: rightPoint[1] }, rows, cols)) {
-                        grid[rightPoint[0]][rightPoint[1]] = '#';
+                        grid[rightPoint[0]][rightPoint[1]] = "#";
                         antinodes.add(rightString);
                     }
                 }
@@ -105,7 +105,7 @@ class Day8 extends day_1.Day {
         for (let val of Object.values(antennas)) {
             if (val.length > 1) {
                 for (let p of val) {
-                    antinodes.add(`x${p.x}y${(p.y)}`);
+                    antinodes.add(`x${p.x}y${p.y}`);
                 }
             }
             while (val.length) {
@@ -117,31 +117,31 @@ class Day8 extends day_1.Day {
                     let leftString;
                     let rightString;
                     if (p1.x < p2.x) {
-                        leftPoint = [(p1.x - slope.x), (p1.y - slope.y)];
-                        leftString = `x${leftPoint[0]}y${(leftPoint[1])}`;
-                        rightPoint = [(p2.x + slope.x), (p2.y + slope.y)];
-                        rightString = `x${rightPoint[0]}y${(rightPoint[1])}`;
+                        leftPoint = [p1.x - slope.x, p1.y - slope.y];
+                        leftString = `x${leftPoint[0]}y${leftPoint[1]}`;
+                        rightPoint = [p2.x + slope.x, p2.y + slope.y];
+                        rightString = `x${rightPoint[0]}y${rightPoint[1]}`;
                     }
                     else {
-                        rightPoint = [(p1.x + slope.x), (p1.y + slope.y)];
-                        rightString = `x${rightPoint[0]}y${(rightPoint[1])}`;
-                        leftPoint = [(p2.x - slope.x), (p2.y - slope.y)];
-                        leftString = `x${leftPoint[0]}y${(leftPoint[1])}`;
+                        rightPoint = [p1.x + slope.x, p1.y + slope.y];
+                        rightString = `x${rightPoint[0]}y${rightPoint[1]}`;
+                        leftPoint = [p2.x - slope.x, p2.y - slope.y];
+                        leftString = `x${leftPoint[0]}y${leftPoint[1]}`;
                     }
                     console.log(`lp ${leftPoint} rp ${rightPoint}`);
                     while (onGrid({ x: leftPoint[0], y: leftPoint[1] }, rows, cols)) {
-                        grid[leftPoint[0]][leftPoint[1]] = '#';
+                        grid[leftPoint[0]][leftPoint[1]] = "#";
                         antinodes.add(leftString);
                         leftPoint[0] = leftPoint[0] - slope.x;
                         leftPoint[1] = leftPoint[1] - slope.y;
-                        leftString = `x${leftPoint[0]}y${(leftPoint[1])}`;
+                        leftString = `x${leftPoint[0]}y${leftPoint[1]}`;
                     }
                     while (onGrid({ x: rightPoint[0], y: rightPoint[1] }, rows, cols)) {
-                        grid[rightPoint[0]][rightPoint[1]] = '#';
+                        grid[rightPoint[0]][rightPoint[1]] = "#";
                         antinodes.add(rightString);
                         rightPoint[0] = rightPoint[0] + slope.x;
                         rightPoint[1] = rightPoint[1] + slope.y;
-                        rightString = `x${rightPoint[0]}y${(rightPoint[1])}`;
+                        rightString = `x${rightPoint[0]}y${rightPoint[1]}`;
                     }
                 }
             }

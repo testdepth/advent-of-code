@@ -72,15 +72,14 @@ class Day6 extends day_1.Day {
                 return;
             }
             //check if visited, otherewise don't increment
-            if (grid[r][c] != 'X') {
+            if (grid[r][c] != "X") {
                 visited++;
-                grid[r][c] = 'X';
+                grid[r][c] = "X";
             }
-            ;
             //find next direction to go
             let move = moveDirection(dir);
             if (r + move[0] < rows && c + move[1] < cols) {
-                if (grid[r + move[0]][c + move[1]] === '#') {
+                if (grid[r + move[0]][c + move[1]] === "#") {
                     dir = goRight(dir);
                     move = moveDirection(dir);
                 }
@@ -105,21 +104,20 @@ class Day6 extends day_1.Day {
         let start;
         let startCoord;
         let startVal;
-        let md5 = (contents) => crypto.createHash('md5').update(contents.toString()).digest("hex");
+        let md5 = (contents) => crypto.createHash("md5").update(contents.toString()).digest("hex");
         let visited = 0;
         let dfs = (r, c, dir) => {
             if (r >= rows || c >= cols || r < 0 || c < 0) {
                 return;
             }
             //check if visited, otherewise don't increment
-            if (grid[r][c] != 'X') {
-                grid[r][c] = 'X';
+            if (grid[r][c] != "X") {
+                grid[r][c] = "X";
             }
-            ;
             //find next direction to go
             let move = moveDirection(dir);
             if (r + move[0] < rows && c + move[1] < cols) {
-                if (grid[r + move[0]][c + move[1]] === '#') {
+                if (grid[r + move[0]][c + move[1]] === "#") {
                     dir = goRight(dir);
                     move = moveDirection(dir);
                 }
@@ -158,8 +156,11 @@ class Day6 extends day_1.Day {
                 }
                 let move = moveDirection(dir);
                 // console.log(`r: ${r} c ${c} move ${move}`);
-                if (r + move[0] < rows && c + move[1] < cols && r + move[0] >= 0 && c + move[1] >= 0) {
-                    if (grid[r + move[0]][c + move[1]] === '#') {
+                if (r + move[0] < rows &&
+                    c + move[1] < cols &&
+                    r + move[0] >= 0 &&
+                    c + move[1] >= 0) {
+                    if (grid[r + move[0]][c + move[1]] === "#") {
                         dir = goRight(dir);
                         move = moveDirection(dir);
                     }
@@ -179,5 +180,5 @@ class Day6 extends day_1.Day {
         return String(visited);
     }
 }
-exports.default = new Day6;
+exports.default = new Day6();
 //# sourceMappingURL=index.js.map

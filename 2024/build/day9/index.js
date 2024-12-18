@@ -21,7 +21,6 @@ class Day9 extends day_1.Day {
             for (let i = 0; i < file; i++) {
                 map.push(String(counter));
             }
-            ;
             counter++;
             let space = Number(arrayInput.pop());
             for (let i = 0; i < space; i++) {
@@ -53,7 +52,6 @@ class Day9 extends day_1.Day {
             for (let i = 0; i < file; i++) {
                 fileArray.push(String(counter));
             }
-            ;
             map.push(fileArray);
             counter++;
             let space = Number(arrayInput.pop());
@@ -103,5 +101,5 @@ class Day9 extends day_1.Day {
         return String(counter);
     }
 }
-exports.default = new Day9;
+exports.default = new Day9();
 //# sourceMappingURL=index.js.map

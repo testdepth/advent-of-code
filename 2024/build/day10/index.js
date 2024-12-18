@@ -12,11 +12,16 @@ class Day10 extends day_1.Day {
         let grid = (0, bfs_1.stringTo2D)(input);
         let rows = grid.length;
         let cols = grid[0].length;
-        let moves = [[1, 0], [-1, 0], [0, 1], [0, -1]];
+        let moves = [
+            [1, 0],
+            [-1, 0],
+            [0, 1],
+            [0, -1],
+        ];
         let bfs = (row, col) => {
             let queue = [];
             let visited = new Set();
-            //populate the queue 
+            //populate the queue
             queue.push({ row: row, col: col, level: 0 });
             visited.add(JSON.stringify({ row: row, col: col, level: 0 }));
             while (queue.length) {
@@ -29,7 +34,12 @@ class Day10 extends day_1.Day {
                     let nextC = cur.col + coord[1];
                     let next = { row: nextR, col: nextC, level: cur.level + 1 };
                     let has = visited.has(JSON.stringify(next));
-                    if (nextR >= 0 && nextR < rows && nextC >= 0 && nextC < cols && grid[nextR][nextC] === String(cur.level + 1) && !visited.has(JSON.stringify(next))) {
+                    if (nextR >= 0 &&
+                        nextR < rows &&
+                        nextC >= 0 &&
+                        nextC < cols &&
+                        grid[nextR][nextC] === String(cur.level + 1) &&
+                        !visited.has(JSON.stringify(next))) {
                         queue.push(next);
                         visited.add(JSON.stringify(next));
                     }
@@ -51,10 +61,15 @@ class Day10 extends day_1.Day {
         let grid = (0, bfs_1.stringTo2D)(input);
         let rows = grid.length;
         let cols = grid[0].length;
-        let moves = [[1, 0], [-1, 0], [0, 1], [0, -1]];
+        let moves = [
+            [1, 0],
+            [-1, 0],
+            [0, 1],
+            [0, -1],
+        ];
         let bfs = (row, col) => {
             let queue = [];
-            //populate the queue 
+            //populate the queue
             queue.push({ row: row, col: col, level: 0 });
             while (queue.length) {
                 let cur = queue.shift();
@@ -65,7 +80,11 @@ class Day10 extends day_1.Day {
                     let nextR = cur.row + coord[0];
                     let nextC = cur.col + coord[1];
                     let next = { row: nextR, col: nextC, level: cur.level + 1 };
-                    if (nextR >= 0 && nextR < rows && nextC >= 0 && nextC < cols && grid[nextR][nextC] === String(cur.level + 1)) {
+                    if (nextR >= 0 &&
+                        nextR < rows &&
+                        nextC >= 0 &&
+                        nextC < cols &&
+                        grid[nextR][nextC] === String(cur.level + 1)) {
                         queue.push(next);
                     }
                 }
@@ -81,5 +100,5 @@ class Day10 extends day_1.Day {
         return String(result);
     }
 }
-exports.default = new Day10;
+exports.default = new Day10();
 //# sourceMappingURL=index.js.map

@@ -8,7 +8,11 @@ function parseInput(input) {
         let split = line.split(":");
         result.push({
             solution: Number(split[0]),
-            equation: split[1].trim().split(" ").map((input) => Number(input)).reverse(),
+            equation: split[1]
+                .trim()
+                .split(" ")
+                .map((input) => Number(input))
+                .reverse(),
         });
     }
     return result;
@@ -44,7 +48,7 @@ class Day7 extends day_1.Day {
             flag = false;
             solve(operator, undefined);
         }
-        return (String(result));
+        return String(result);
     }
     solveForPartTwo(input) {
         let parsed = parseInput(input);
@@ -75,8 +79,8 @@ class Day7 extends day_1.Day {
             flag = false;
             solve(operator, undefined);
         }
-        return (String(result));
+        return String(result);
     }
 }
-exports.default = new Day7;
+exports.default = new Day7();
 //# sourceMappingURL=index.js.map

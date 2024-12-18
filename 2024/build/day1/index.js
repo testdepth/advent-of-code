@@ -7,7 +7,7 @@ class Day1 extends day_1.Day {
     }
     solveForPartOne(input) {
         // Split on newlines
-        const intermediate = input.split('\n');
+        const intermediate = input.split("\n");
         var left = [];
         var right = [];
         // iterate through and append to left and right arrays
@@ -16,7 +16,6 @@ class Day1 extends day_1.Day {
             left.push(Number(splitted[0]));
             right.push(Number(splitted[1]));
         }
-        ;
         // sort arrays
         left.sort();
         right.sort();
@@ -28,7 +27,7 @@ class Day1 extends day_1.Day {
     }
     solveForPartTwo(input) {
         // Split on newlines
-        const intermediate = input.split('\n');
+        const intermediate = input.split("\n");
         var left = [];
         //use dictionary objects to count
         var leftCounts = {};
@@ -44,15 +43,13 @@ class Day1 extends day_1.Day {
             left.push(leftVal);
             right.push(rightVal);
         }
-        ;
         var sum = 0;
         while (left.length) {
             let leftVal = left.pop();
-            sum += (leftVal * (rightCounts[leftVal] || 0));
+            sum += leftVal * (rightCounts[leftVal] || 0);
         }
-        ;
         return String(sum);
     }
 }
-exports.default = new Day1;
+exports.default = new Day1();
 //# sourceMappingURL=index.js.map

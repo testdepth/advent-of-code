@@ -101,7 +101,6 @@ class Day4 extends day_1.Day {
                 c + dir[1] < cols) {
                 return grid[r + dir[0]][c + dir[1]];
             }
-            ;
             return ".";
         };
         for (let r = 0; r < rows; r++) {
@@ -112,7 +111,8 @@ class Day4 extends day_1.Day {
                     let left = check(r, c, [-1, -1]) + check(r, c, [1, 1]);
                     // //right X
                     let right = check(r, c, [-1, 1]) + check(r, c, [1, -1]);
-                    if ((right === "MS" || right === "SM") && (left === "MS" || left === "SM")) {
+                    if ((right === "MS" || right === "SM") &&
+                        (left === "MS" || left === "SM")) {
                         result++;
                     }
                 }
