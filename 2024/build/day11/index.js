@@ -34,67 +34,35 @@ class Day11 extends day_1.Day {
     }
     solveForPartTwo(input) {
         let stones = input.split(" ");
-        const cache = new Map();
-        // Track growth patterns
-        const growthHistory = [stones.length];
-        const ratioHistory = [];
-        let applyRules = (stone) => {
-            const cached = cache.get(stone);
-            if (cached)
-                return cached;
-            const stoneNumber = Number(stone);
-            let result;
-            if (stoneNumber === 0) {
-                result = ["1"];
-            }
-            else if (stone.length % 2 === 0) {
-                const half = stone.length / 2;
-                result = [
-                    String(Number(stone.slice(0, half))),
-                    String(Number(stone.slice(half)))
-                ];
-            }
-            else {
-                result = [String(stoneNumber * 2024)];
-            }
-            cache.set(stone, result);
-            return result;
-        };
-        let ruleRound = (stoneList) => {
-            const output = [];
-            for (const stone of stoneList) {
-                const rules = applyRules(stone);
-                output.push(...rules);
-            }
-            return output;
-        };
-        try {
-            for (let i = 0; i < 20; i++) { // Reduced iterations to analyze pattern
-                stones = ruleRound(stones);
-                growthHistory.push(stones.length);
-                // Calculate growth ratio
-                if (i > 0) {
-                    const ratio = stones.length / growthHistory[i];
-                    ratioHistory.push(ratio);
-                    console.log(`Iteration ${i}: Size=${stones.length}, Ratio=${ratio}`);
+        let ruleRound = (stoneList, n) => {
+            const cache = new Map();
+            let solveStone = (stone, n) => {
+                if (n === 0) {
+                    return 1;
                 }
-                // If we detect a stable pattern, we can project forward
-                if (ratioHistory.length >= 3) {
-                    const lastThreeRatios = ratioHistory.slice(-3);
-                    if (lastThreeRatios.every(r => Math.abs(r - lastThreeRatios[0]) < 0.0001)) {
-                        console.log("Stable ratio detected:", lastThreeRatios[0]);
-                        // Project forward to iteration 75
-                        const remainingIterations = 75 - i - 1;
-                        const projectedSize = stones.length * Math.pow(lastThreeRatios[0], remainingIterations);
-                        return `Projected size after 75 iterations: ${Math.floor(projectedSize)}`;
-                    }
+                let cacheKey = `${stone},${n}`;
+                let save = (result) => {
+                    cache.set(cacheKey, result);
+                    return result;
+                };
+                if (cache.has(cacheKey)) {
+                    return cache.get(cacheKey);
                 }
-            }
-            return String(stones.length);
-        }
-        catch (error) {
-            return `Error analyzing growth pattern: ${stones.length} stones`;
-        }
+                if (stone === "0") {
+                    return save(solveStone('1', n - 1));
+                }
+                if (stone.length % 2 === 0) {
+                    let middleIndex = stone.length / 2;
+                    let firstHalf = stone.slice(0, middleIndex);
+                    let secondHalf = stone.slice(middleIndex);
+                    return save(solveStone(`${parseInt(firstHalf, 10)}`, n - 1) +
+                        solveStone(`${parseInt(secondHalf, 10)}`, n - 1));
+                }
+                return save(solveStone(`${parseInt(stone, 10) * 2024}`, n - 1));
+            };
+            return stones.reduce((sum, stone) => sum + solveStone(stone, n), 0);
+        };
+        return String(ruleRound(stones, 75));
     }
 }
 exports.default = new Day11;
